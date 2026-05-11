@@ -1,6 +1,6 @@
 {
   "dependencies": {
-  "sequelize": "...",
-"sqlite3": "..."
+    "sequelize": "file:...",
+    "sqlite3": "file:..."
   }
 }
