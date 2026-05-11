@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css" />
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2>PTS</h2>
+
+    <ul>
+      <li onclick="showDashboard()">Dashboard</li>
+      <li onclick="showProjects()">Projeler</li>
+      <li onclick="showPersonnel()">Personeller</li>
+      <li onclick="showMaterials()">Stok</li>
+      <li onclick="showCompanies()">Cariler</li>
+      <li onclick="showOffers()">Teklifler</li>
+      <li onclick="showSuppliers()">Tedarikçiler</li>
+      <li onclick="showSettings()">Ayarlar</li>
+      <li onclick="showReports()">Raporlar</li>
+    </ul>
+
+    <button type="button" onclick="logout()">Çıkış Yap</button>
+  </div>
+
+  <div class="main-content">
+    <h1>Hoş Geldin 👋</h1>
+
+    <div id="dashboard-cards">
+      <div class="charts">
+
+  <div class="chart-card">
+    <h3>Proje Durumu</h3>
+
+    <div class="progress-box">
+      <div id="project-progress-bar"></div>
+    </div>
+
+    <p id="project-progress-text"></p>
+  </div>
+
+  <div class="chart-card">
+    <h3>Teklif Durumu</h3>
+
+    <div class="progress-box">
+      <div id="offer-progress-bar"></div>
+    </div>
+
+    <p id="offer-progress-text"></p>
+  </div>
+
+</div>
+      <div class="cards">
+        <div class="card">
+          <h3>Toplam Proje</h3>
+          <p id="total-projects">0</p>
+        </div>
+
+        <div class="card">
+          <h3>Personel</h3>
+          <p id="total-personnel">0</p>
+        </div>
+
+        <div class="card">
+          <h3>Bekleyen Teklif</h3>
+          <p id="total-offers">0</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="project-form" style="display: none;">
+      <h2>Yeni Proje Ekle</h2>
+
+      <input type="text" id="project-title" placeholder="Proje Adı" />
+      <textarea id="project-description" placeholder="Proje Açıklaması"></textarea>
+
+      <label>Başlangıç Tarihi</label>
+      <input type="date" id="project-start-date" />
+
+      <label>Bitiş Tarihi</label>
+      <input type="date" id="project-end-date" />
+      <input type="number" id="project-offer-amount" placeholder="Teklif Tutarı" />
+
+      <button type="button" onclick="addProject()">Proje Ekle</button>
+    </div>
+
+    <input
+  type="text"
+  id="project-search"
+  placeholder="Proje ara..."
+  onkeyup="filterProjects()"
+/>
+    <div id="project-list"></div>
+
+    <div id="personnel-section" style="display: none;">
+      <div class="personnel-form-box">
+        <h2>Personel Ekle</h2>
+
+        <input type="text" id="personnel-name" placeholder="Ad Soyad" />
+        <input type="text" id="personnel-department" placeholder="Meslek" />
+        <input type="text" id="personnel-title" placeholder="Departman" />
+        <input type="text" id="personnel-phone" placeholder="Telefon" />
+        <input type="email" id="personnel-email" placeholder="E-posta" />
+
+        <button type="button" onclick="addPersonnel()">Personel Ekle</button>
+      </div>
+
+      <h2>Personel Listesi</h2>
+      <div id="personnel-list"></div>
+    </div>
+
+    <div id="material-section" style="display: none;">
+      <div class="material-form-box">
+        <h2>Malzeme Ekle</h2>
+
+        <input type="text" id="material-name" placeholder="Malzeme Adı" />
+        <input type="number" id="material-quantity" placeholder="Miktar" />
+        <input type="text" id="material-unit" placeholder="Birim" />
+        <input type="number" id="material-price" placeholder="Birim Fiyat" />
+
+        <select id="material-supplier">
+          <option value="">Tedarikçi seç</option>
+        </select>
+
+        <button type="button" onclick="addMaterial(event)">Malzeme Ekle</button>
+      </div>
+
+      <h2>Stok Listesi</h2>
+      <div id="material-list"></div>
+    </div>
+
+    <div id="company-section" style="display: none;">
+      <div class="company-form-box">
+        <h2>Firma Ekle</h2>
+
+        <input type="text" id="company-name" placeholder="Firma Adı" />
+        <input type="text" id="company-phone" placeholder="Telefon" />
+        <input type="email" id="company-email" placeholder="E-posta" />
+        <textarea id="company-address" placeholder="Adres"></textarea>
+
+        <button type="button" onclick="addCompany()">Firma Ekle</button>
+      </div>
+
+      <h2>Firma Listesi</h2>
+      <div id="company-list"></div>
+    </div>
+
+    <div id="offer-section" style="display: none;">
+      <div class="offer-form-box">
+        <h2>Teklif Oluştur</h2>
+
+        <input type="text" id="offer-title" placeholder="Teklif Başlığı" />
+        <select id="offer-company"></select>
+        <input type="number" id="offer-amount" placeholder="Teklif Tutarı" />
+
+        <button type="button" onclick="addOffer()">Teklif Oluştur</button>
+      </div>
+
+      <h2>Teklif Listesi</h2>
+      <div id="offer-list"></div>
+    </div>
+
+    <div id="supplier-section" style="display: none;">
+      <div class="supplier-form-box">
+        <h2>Tedarikçi Ekle</h2>
+
+        <input type="text" id="supplier-name" placeholder="Firma Adı" />
+        <input type="text" id="supplier-phone" placeholder="Telefon" />
+        <input type="email" id="supplier-email" placeholder="E-posta" />
+        <textarea id="supplier-address" placeholder="Adres"></textarea>
+
+        <button type="button" onclick="addSupplier()">Tedarikçi Ekle</button>
+      </div>
+
+      <h2>Tedarikçi Listesi</h2>
+      <div id="supplier-list"></div>
+    </div>
+
+<div id="settings-section" style="display: none;">
+  <h2>Ayarlar</h2>
+
+  <div class="settings-box">
+    <h3>Kullanıcı Yönetimi</h3>
+
+    <div id="user-list"></div>
+  </div>
+</div>
+<div id="reports-section" style="display: none;">
+  <h2>Raporlar</h2>
+
+  <div class="cards">
+    <div class="card">
+      <h3>Toplam Stok Değeri</h3>
+      <p id="report-stock-value">0 ₺</p>
+    </div>
+
+    <div class="card">
+      <h3>Toplam Teklif Tutarı</h3>
+      <p id="report-offer-value">0 ₺</p>
+    </div>
+
+    <div class="card">
+      <h3>Toplam Proje Sayısı</h3>
+      <p id="report-project-count">0</p>
+    </div>
+  </div>
+</div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>

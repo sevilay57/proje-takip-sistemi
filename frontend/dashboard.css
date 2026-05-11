@@ -1,0 +1,247 @@
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f4f6f9;
+  color: #1f2937;
+  display: flex;
+}
+
+.sidebar {
+  width: 240px;
+  min-height: 100vh;
+  background: #111827;
+  color: white;
+  padding: 25px 20px;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+.sidebar h2 {
+  margin-bottom: 30px;
+  font-size: 28px;
+  letter-spacing: 2px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  padding: 13px 15px;
+  margin-bottom: 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.sidebar li:hover {
+  background: #2563eb;
+}
+
+.sidebar button {
+  width: calc(100% - 40px);
+  position: absolute;
+  bottom: 25px;
+  left: 20px;
+  background: #ef4444;
+}
+
+.main-content {
+  margin-left: 240px;
+  padding: 30px;
+  width: calc(100% - 240px);
+}
+
+h1 {
+  margin-top: 0;
+  margin-bottom: 25px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 25px;
+}
+
+.card,
+.project-card,
+.personnel-card,
+.material-card,
+.company-card,
+.offer-card,
+.supplier-card {
+  background: white;
+  border-radius: 16px;
+  padding: 22px;
+  margin-bottom: 18px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.card h3 {
+  margin: 0 0 10px;
+  color: #6b7280;
+}
+
+.card p {
+  font-size: 30px;
+  font-weight: bold;
+  margin: 0;
+  color: #2563eb;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  outline: none;
+  font-size: 14px;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #2563eb;
+}
+
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+button {
+  border: none;
+  background: #2563eb;
+  color: white;
+  padding: 11px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin: 4px;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+button:last-child {
+  background: #ef4444;
+}
+
+button:last-child:hover {
+  background: #dc2626;
+}
+
+.project-normal {
+  border-left: 6px solid #22c55e;
+}
+
+.project-warning {
+  border-left: 6px solid #f59e0b;
+}
+
+.project-late {
+  border-left: 6px solid #ef4444;
+}
+
+.project-card span {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: bold;
+  color: white;
+}
+
+/* DEVAM EDİYOR */
+.project-normal span {
+  background: #2563eb;
+}
+
+/* YAKLAŞIYOR */
+.project-warning span {
+  background: #f59e0b;
+}
+
+/* GECİKTİ */
+.project-late span {
+  background: #ef4444;
+}
+
+.assigned-personnel,
+.used-material-item,
+.offer-item-card {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 12px;
+  margin: 10px 0;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 18px 0;
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    width: 200px;
+  }
+
+  .main-content {
+    margin-left: 200px;
+    width: calc(100% - 200px);
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+  }
+}
+.charts {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.chart-card {
+  background: white;
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+.progress-box {
+  width: 100%;
+  height: 22px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 15px 0;
+}
+
+#project-progress-bar,
+#offer-progress-bar {
+  height: 100%;
+  width: 0%;
+  transition: 0.4s;
+}
+
+#project-progress-bar {
+  background: #22c55e;
+}
+
+#offer-progress-bar {
+  background: #2563eb;
+}
