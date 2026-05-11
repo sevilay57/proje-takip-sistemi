@@ -90,9 +90,10 @@ sequelize.sync().then(async () => {
     },
   });
 
-  app.listen(5000, () => {
-    console.log("Server çalışıyor");
-    console.log("Database bağlandı");
-  });
+const PORT = process.env.PORT || 5000;
 
+app.listen(PORT, () => {
+  console.log(`Server çalışıyor ${PORT}`);
+  console.log("Database bağlandı");
+});
 }); 
