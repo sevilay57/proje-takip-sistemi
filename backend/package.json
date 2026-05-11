@@ -16,8 +16,7 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
-    "sequelize": "...",
-"sqlite3": "..."
+    "sequelize": "file:..."
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
