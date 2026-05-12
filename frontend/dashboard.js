@@ -36,19 +36,19 @@ function showDashboard() {
 }
 
 async function loadDashboardStats() {
-  const projectResponse = await fetch("http://localhost:5000/api/projects", {
+  const projectResponse = await fetch("http://https://proje-takip-sistemi-1.onrender.com/api/projects", {
     headers: {
       Authorization: "Bearer " + token,
     },
   });
 
-  const personnelResponse = await fetch("http://localhost:5000/api/personnel", {
+  const personnelResponse = await fetch("http://https://proje-takip-sistemi-1.onrender.com/api/personnel", {
     headers: {
       Authorization: "Bearer " + token,
     },
   });
 
-  const offerResponse = await fetch("http://localhost:5000/api/offers", {
+  const offerResponse = await fetch("http://https://proje-takip-sistemi-1.onrender.com/api/offers", {
     headers: {
       Authorization: "Bearer " + token,
     },
@@ -103,7 +103,7 @@ async function showProjects() {
 
   const projectList = document.getElementById("project-list");
 
-  const response = await fetch("http://localhost:5000/api/projects", {
+  const response = await fetch("http://https://proje-takip-sistemi-1.onrender.com/api/projects", {
     method: "GET",
     headers: {
       Authorization: "Bearer " + token,
@@ -177,7 +177,7 @@ async function addProject() {
   const endDate = document.getElementById("project-end-date").value;
   const offerAmount = document.getElementById("project-offer-amount").value;
 
-  await fetch("http://localhost:5000/api/projects", {
+  await fetch("http://https://proje-takip-sistemi-1.onrender.com/api/projects", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -202,7 +202,7 @@ async function addProject() {
 }
 
 async function deleteProject(id) {
-  await fetch(`http://localhost:5000/api/projects/${id}`, {
+  await fetch(`http://https://proje-takip-sistemi-1.onrender.com/api/projects/${id}`, {
     method: "DELETE",
     headers: {
       Authorization: "Bearer " + token,
@@ -245,7 +245,7 @@ async function showPersonnel() {
 
   document.getElementById("personnel-section").style.display = "block";
 
-  const response = await fetch("http://localhost:5000/api/personnel", {
+  const response = await fetch("http://https://proje-takip-sistemi-1.onrender.com/api/personnel", {
     headers: {
       Authorization: "Bearer " + token,
     },
@@ -281,7 +281,7 @@ async function addPersonnel() {
   const phone = document.getElementById("personnel-phone").value;
   const email = document.getElementById("personnel-email").value;
 
-  await fetch("http://localhost:5000/api/personnel", {
+  await fetch("http://https://proje-takip-sistemi-1.onrender.com/api/personnel", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -306,7 +306,7 @@ async function addPersonnel() {
 }
 
 async function deletePersonnel(id) {
-  await fetch(`http://localhost:5000/api/personnel/${id}`, {
+  await fetch(`http://https://proje-takip-sistemi-1.onrender.com/api/personnel/${id}`, {
     method: "DELETE",
     headers: {
       Authorization: "Bearer " + token,
@@ -319,7 +319,7 @@ async function deletePersonnel(id) {
 /* PROJE PERSONEL ATAMA */
 
 async function loadPersonnelOptions(projectId) {
-  const response = await fetch("http://localhost:5000/api/personnel", {
+  const response = await fetch("http://https://proje-takip-sistemi-1.onrender.com/api/personnel", {
     headers: {
       Authorization: "Bearer " + token,
     },
@@ -350,7 +350,7 @@ async function assignPersonnel(projectId, event) {
     return;
   }
 
-  await fetch("http://localhost:5000/api/assignments", {
+  await fetch("http://https://proje-takip-sistemi-1.onrender.com/api/assignments", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -368,7 +368,7 @@ async function assignPersonnel(projectId, event) {
 }
 
 async function loadAssignedPersonnel(projectId) {
-  const response = await fetch(`http://localhost:5000/api/assignments/${projectId}`, {
+  const response = await fetch(`http://https://proje-takip-sistemi-1.onrender.com/api/assignments/${projectId}`, {
     headers: {
       Authorization: "Bearer " + token,
     },
@@ -400,7 +400,7 @@ async function loadAssignedPersonnel(projectId) {
 async function removePersonnelFromProject(projectId, personnelId, event) {
   if (event) event.preventDefault();
 
-  await fetch(`http://localhost:5000/api/assignments/${projectId}/${personnelId}`, {
+  await fetch(`http://https://proje-takip-sistemi-1.onrender.com/api/assignments/${projectId}/${personnelId}`, {
     method: "DELETE",
     headers: {
       Authorization: "Bearer " + token,
@@ -424,7 +424,7 @@ async function showMaterials() {
 }
 
 async function loadMaterials() {
-  const response = await fetch("http://localhost:5000/api/materials", {
+  const response = await fetch("http://https://proje-takip-sistemi-1.onrender.com/api/materials", {
     headers: {
       Authorization: "Bearer " + token,
     },
@@ -464,7 +464,7 @@ async function addMaterial(event) {
   const unitPrice = document.getElementById("material-price").value;
   const supplierId = document.getElementById("material-supplier").value;
 
-  await fetch("http://localhost:5000/api/materials", {
+  await fetch("http://https://proje-takip-sistemi-1.onrender.com/api/materials", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -496,7 +496,7 @@ async function deleteMaterial(id, event) {
 
   localStorage.setItem("activeSection", "materials");
 
-  await fetch(`http://localhost:5000/api/materials/${id}`, {
+  await fetch(`http://https://proje-takip-sistemi-1.onrender.com/api/materials/${id}`, {
     method: "DELETE",
     headers: {
       Authorization: "Bearer " + token,
@@ -509,7 +509,7 @@ async function deleteMaterial(id, event) {
 }
 
 async function loadSupplierOptions() {
-  const response = await fetch("http://localhost:5000/api/suppliers", {
+  const response = await fetch("http://https://proje-takip-sistemi-1.onrender.com/api/suppliers", {
     headers: {
       Authorization: "Bearer " + token,
     },
@@ -538,7 +538,7 @@ async function showCompanies() {
 
   document.getElementById("company-section").style.display = "block";
 
-  const response = await fetch("http://localhost:5000/api/companies", {
+  const response = await fetch("http://https://proje-takip-sistemi-1.onrender.com/api/companies", {
     headers: {
       Authorization: "Bearer " + token,
     },
@@ -572,7 +572,7 @@ async function addCompany() {
   const email = document.getElementById("company-email").value;
   const address = document.getElementById("company-address").value;
 
-  await fetch("http://localhost:5000/api/companies", {
+  await fetch("http://https://proje-takip-sistemi-1.onrender.com/api/companies", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -595,7 +595,7 @@ async function addCompany() {
 }
 
 async function deleteCompany(id) {
-  await fetch(`http://localhost:5000/api/companies/${id}`, {
+  await fetch(`http://https://proje-takip-sistemi-1.onrender.com/api/companies/${id}`, {
     method: "DELETE",
     headers: {
       Authorization: "Bearer " + token,
@@ -616,7 +616,7 @@ async function showOffers() {
 
   await loadCompanyOptions();
 
-  const response = await fetch("http://localhost:5000/api/offers", {
+  const response = await fetch("http://https://proje-takip-sistemi-1.onrender.com/api/offers", {
     headers: {
       Authorization: "Bearer " + token,
     },
@@ -676,7 +676,7 @@ async function showOffers() {
 }
 
 async function loadCompanyOptions() {
-  const response = await fetch("http://localhost:5000/api/companies", {
+  const response = await fetch("http://https://proje-takip-sistemi-1.onrender.com/api/companies", {
     headers: {
       Authorization: "Bearer " + token,
     },
@@ -701,7 +701,7 @@ async function addOffer() {
   const companyId = document.getElementById("offer-company").value;
   const amount = document.getElementById("offer-amount").value;
 
-  await fetch("http://localhost:5000/api/offers", {
+  await fetch("http://https://proje-takip-sistemi-1.onrender.com/api/offers", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -721,7 +721,7 @@ async function addOffer() {
 }
 
 async function approveOffer(id) {
-  await fetch(`http://localhost:5000/api/offers/${id}/status`, {
+  await fetch(`http://https://proje-takip-sistemi-1.onrender.com/api/offers/${id}/status`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -736,7 +736,7 @@ async function approveOffer(id) {
 }
 
 async function rejectOffer(id) {
-  await fetch(`http://localhost:5000/api/offers/${id}/status`, {
+  await fetch(`http://https://proje-takip-sistemi-1.onrender.com/api/offers/${id}/status`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -751,7 +751,7 @@ async function rejectOffer(id) {
 }
 
 async function createProjectFromOffer(id) {
-  await fetch(`http://localhost:5000/api/offers/${id}/create-project`, {
+  await fetch(`http://https://proje-takip-sistemi-1.onrender.com/api/offers/${id}/create-project`, {
     method: "POST",
     headers: {
       Authorization: "Bearer " + token,
@@ -764,7 +764,7 @@ async function createProjectFromOffer(id) {
 }
 
 async function deleteOffer(id) {
-  await fetch(`http://localhost:5000/api/offers/${id}`, {
+  await fetch(`http://https://proje-takip-sistemi-1.onrender.com/api/offers/${id}`, {
     method: "DELETE",
     headers: {
       Authorization: "Bearer " + token,
@@ -783,7 +783,7 @@ async function showSuppliers() {
 
   document.getElementById("supplier-section").style.display = "block";
 
-  const response = await fetch("http://localhost:5000/api/suppliers", {
+  const response = await fetch("http://https://proje-takip-sistemi-1.onrender.com/api/suppliers", {
     headers: {
       Authorization: "Bearer " + token,
     },
@@ -817,7 +817,7 @@ async function addSupplier() {
   const email = document.getElementById("supplier-email").value;
   const address = document.getElementById("supplier-address").value;
 
-  await fetch("http://localhost:5000/api/suppliers", {
+  await fetch("http://https://proje-takip-sistemi-1.onrender.com/api/suppliers", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -840,7 +840,7 @@ async function addSupplier() {
 }
 
 async function deleteSupplier(id) {
-  await fetch(`http://localhost:5000/api/suppliers/${id}`, {
+  await fetch(`http://https://proje-takip-sistemi-1.onrender.com/api/suppliers/${id}`, {
     method: "DELETE",
     headers: {
       Authorization: "Bearer " + token,
@@ -895,7 +895,7 @@ window.addEventListener("load", () => {
 async function loadMaterialOptions(projectId) {
 
   const response = await fetch(
-    "http://localhost:5000/api/materials",
+    "http://https://proje-takip-sistemi-1.onrender.com/api/materials",
     {
       headers: {
         Authorization: "Bearer " + token,
@@ -945,7 +945,7 @@ async function addMaterialToProject(projectId, event) {
   }
 
   const response = await fetch(
-    "http://localhost:5000/api/project-materials",
+    "http://https://proje-takip-sistemi-1.onrender.com/api/project-materials",
     {
       method: "POST",
 
@@ -983,7 +983,7 @@ async function addMaterialToProject(projectId, event) {
 async function loadUsedMaterials(projectId) {
 
   const response = await fetch(
-    `http://localhost:5000/api/project-materials/${projectId}`,
+    `http://https://proje-takip-sistemi-1.onrender.com/api/project-materials/${projectId}`,
     {
       headers: {
         Authorization: "Bearer " + token,
@@ -1033,7 +1033,7 @@ ${material.Material ? material.Material.name : material.materialId}
   });
 
  const projectResponse = await fetch(
-  "http://localhost:5000/api/projects",
+  "http://https://proje-takip-sistemi-1.onrender.com/api/projects",
   {
     headers: {
       Authorization: "Bearer " + token,
@@ -1084,7 +1084,7 @@ async function addOfferItem(offerId, event) {
     return;
   }
 
-  await fetch("http://localhost:5000/api/offer-items", {
+  await fetch("http://https://proje-takip-sistemi-1.onrender.com/api/offer-items", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -1106,7 +1106,7 @@ async function addOfferItem(offerId, event) {
 }
 
 async function loadOfferItems(offerId) {
-  const response = await fetch(`http://localhost:5000/api/offer-items/${offerId}`, {
+  const response = await fetch(`http://https://proje-takip-sistemi-1.onrender.com/api/offer-items/${offerId}`, {
     headers: {
       Authorization: "Bearer " + token,
     },
@@ -1212,7 +1212,7 @@ async function showSettings() {
   document.getElementById("settings-section").style.display = "block";
 
   const response = await fetch(
-    "http://localhost:5000/api/users",
+    "http://https://proje-takip-sistemi-1.onrender.com/api/users",
     {
       headers: {
         Authorization: "Bearer " + token,
@@ -1260,7 +1260,7 @@ async function showReports() {
   document.getElementById("reports-section").style.display = "block";
 
   const projectResponse = await fetch(
-    "http://localhost:5000/api/projects",
+    "http://https://proje-takip-sistemi-1.onrender.com/api/projects",
     {
       headers: {
         Authorization: "Bearer " + token,
@@ -1269,7 +1269,7 @@ async function showReports() {
   );
 
   const materialResponse = await fetch(
-    "http://localhost:5000/api/materials",
+    "http://https://proje-takip-sistemi-1.onrender.com/api/materials",
     {
       headers: {
         Authorization: "Bearer " + token,
@@ -1278,7 +1278,7 @@ async function showReports() {
   );
 
   const offerResponse = await fetch(
-    "http://localhost:5000/api/offers",
+    "http://https://proje-takip-sistemi-1.onrender.com/api/offers",
     {
       headers: {
         Authorization: "Bearer " + token,
