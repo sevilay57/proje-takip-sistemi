@@ -436,14 +436,36 @@ async function loadMaterials() {
   materialList.innerHTML = "";
 
   materials.forEach((material) => {
+    const quantity = Number(material.quantity || 0);
+    const criticalStock = Number(material.criticalStock || 0);
+    const unitPrice = Number(material.unitPrice || 0);
+    const totalValue = quantity * unitPrice;
+
+    let stockStatus = "Yeterli Stok";
+    let statusClass = "stock-ok";
+
+    if (quantity <= 0) {
+      stockStatus = "Stok Bitti";
+      statusClass = "stock-empty";
+    } else if (quantity <= criticalStock) {
+      stockStatus = "Kritik Stok";
+      statusClass = "stock-critical";
+    }
+
     materialList.innerHTML += `
       <div class="material-card">
-        <h3>${material.name}</h3>
+        <div class="material-header">
+          <h3>${material.name}</h3>
+          <span class="${statusClass}">${stockStatus}</span>
+        </div>
 
-        <p><strong>Miktar:</strong> ${material.quantity}</p>
-        <p><strong>Birim:</strong> ${material.unit}</p>
-        <p><strong>Birim Fiyat:</strong> ${material.unitPrice} ₺</p>
-        <p><strong>Toplam:</strong> ${material.quantity * material.unitPrice} ₺</p>
+        <p><strong>Kategori:</strong> ${material.category || "-"}</p>
+        <p><strong>Miktar:</strong> ${quantity} ${material.unit || ""}</p>
+        <p><strong>Kritik Stok:</strong> ${criticalStock}</p>
+        <p><strong>Birim Fiyat:</strong> ${unitPrice} ₺</p>
+        <p><strong>Toplam Değer:</strong> ${totalValue} ₺</p>
+        <p><strong>Depo Konumu:</strong> ${material.warehouseLocation || "-"}</p>
+        <p><strong>Açıklama:</strong> ${material.description || "-"}</p>
 
         <button type="button" onclick="deleteMaterial(${material.id}, event)">
           Malzeme Sil
@@ -459,9 +481,13 @@ async function addMaterial(event) {
   localStorage.setItem("activeSection", "materials");
 
   const name = document.getElementById("material-name").value;
+  const category = document.getElementById("material-category").value;
   const quantity = document.getElementById("material-quantity").value;
+  const criticalStock = document.getElementById("material-critical").value;
   const unit = document.getElementById("material-unit").value;
   const unitPrice = document.getElementById("material-price").value;
+  const warehouseLocation = document.getElementById("material-location").value;
+  const description = document.getElementById("material-description").value;
   const supplierId = document.getElementById("material-supplier").value;
 
   await fetch("https://proje-takip-sistemi-1.onrender.com/api/materials", {
@@ -472,20 +498,26 @@ async function addMaterial(event) {
     },
     body: JSON.stringify({
       name,
+      category,
       quantity,
+      criticalStock,
       unit,
       unitPrice,
+      warehouseLocation,
+      description,
       supplierId,
     }),
   });
 
   document.getElementById("material-name").value = "";
+  document.getElementById("material-category").value = "";
   document.getElementById("material-quantity").value = "";
+  document.getElementById("material-critical").value = "";
   document.getElementById("material-unit").value = "";
   document.getElementById("material-price").value = "";
+  document.getElementById("material-location").value = "";
+  document.getElementById("material-description").value = "";
   document.getElementById("material-supplier").value = "";
-
-  document.getElementById("material-section").style.display = "block";
 
   await loadSupplierOptions();
   await loadMaterials();
@@ -502,8 +534,6 @@ async function deleteMaterial(id, event) {
       Authorization: "Bearer " + token,
     },
   });
-
-  document.getElementById("material-section").style.display = "block";
 
   await loadMaterials();
 }

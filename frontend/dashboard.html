@@ -114,101 +114,36 @@
 
     <div id="material-section" style="display: none;">
       <div class="material-form-box">
-        <h2>Malzeme Ekle</h2>
+       <h2>Malzeme Ekle</h2>
 
-        <input type="text" id="material-name" placeholder="Malzeme Adı" />
-        <input type="number" id="material-quantity" placeholder="Miktar" />
-        <input type="text" id="material-unit" placeholder="Birim" />
-        <input type="number" id="material-price" placeholder="Birim Fiyat" />
+<input type="text" id="material-name" placeholder="Malzeme Adı" />
 
-        <select id="material-supplier">
-          <option value="">Tedarikçi seç</option>
-        </select>
+<input type="text" id="material-category" placeholder="Kategori (Elektrik, Mekanik, PLC...)" />
 
-        <button type="button" onclick="addMaterial(event)">Malzeme Ekle</button>
-      </div>
+<input type="number" id="material-quantity" placeholder="Miktar" />
 
-      <h2>Stok Listesi</h2>
-      <div id="material-list"></div>
-    </div>
+<input type="number" id="material-critical" placeholder="Kritik Stok Seviyesi" />
 
-    <div id="company-section" style="display: none;">
-      <div class="company-form-box">
-        <h2>Firma Ekle</h2>
+<input type="text" id="material-unit" placeholder="Birim" />
 
-        <input type="text" id="company-name" placeholder="Firma Adı" />
-        <input type="text" id="company-phone" placeholder="Telefon" />
-        <input type="email" id="company-email" placeholder="E-posta" />
-        <textarea id="company-address" placeholder="Adres"></textarea>
+<input type="number" id="material-price" placeholder="Birim Fiyat" />
 
-        <button type="button" onclick="addCompany()">Firma Ekle</button>
-      </div>
+<input type="text" id="material-location" placeholder="Depo Konumu (A Rafı / B-12 vb.)" />
 
-      <h2>Firma Listesi</h2>
-      <div id="company-list"></div>
-    </div>
+<textarea
+  id="material-description"
+  placeholder="Malzeme Açıklaması"
+></textarea>
 
-    <div id="offer-section" style="display: none;">
-      <div class="offer-form-box">
-        <h2>Teklif Oluştur</h2>
+<select id="material-supplier">
+  <option value="">Tedarikçi seç</option>
+</select>
 
-        <input type="text" id="offer-title" placeholder="Teklif Başlığı" />
-        <select id="offer-company"></select>
-        <input type="number" id="offer-amount" placeholder="Teklif Tutarı" />
+<button type="button" onclick="addMaterial(event)">
+  Malzeme Ekle
+</button>
 
-        <button type="button" onclick="addOffer()">Teklif Oluştur</button>
-      </div>
-
-      <h2>Teklif Listesi</h2>
-      <div id="offer-list"></div>
-    </div>
-
-    <div id="supplier-section" style="display: none;">
-      <div class="supplier-form-box">
-        <h2>Tedarikçi Ekle</h2>
-
-        <input type="text" id="supplier-name" placeholder="Firma Adı" />
-        <input type="text" id="supplier-phone" placeholder="Telefon" />
-        <input type="email" id="supplier-email" placeholder="E-posta" />
-        <textarea id="supplier-address" placeholder="Adres"></textarea>
-
-        <button type="button" onclick="addSupplier()">Tedarikçi Ekle</button>
-      </div>
-
-      <h2>Tedarikçi Listesi</h2>
-      <div id="supplier-list"></div>
-    </div>
-
-<div id="settings-section" style="display: none;">
-  <h2>Ayarlar</h2>
-
-  <div class="settings-box">
-    <h3>Kullanıcı Yönetimi</h3>
-
-    <div id="user-list"></div>
-  </div>
-</div>
-<div id="reports-section" style="display: none;">
-  <h2>Raporlar</h2>
-
-  <div class="cards">
-    <div class="card">
-      <h3>Toplam Stok Değeri</h3>
-      <p id="report-stock-value">0 ₺</p>
-    </div>
-
-    <div class="card">
-      <h3>Toplam Teklif Tutarı</h3>
-      <p id="report-offer-value">0 ₺</p>
-    </div>
-
-    <div class="card">
-      <h3>Toplam Proje Sayısı</h3>
-      <p id="report-project-count">0</p>
-    </div>
-  </div>
 </div>
 
-  <script src="dashboard.js"></script>
-</body>
-</html>
+<h2>Stok Listesi</h2>
+<div id="material-list"></div>

@@ -245,3 +245,31 @@ hr {
 #offer-progress-bar {
   background: #2563eb;
 }
+.material-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.stock-ok,
+.stock-critical,
+.stock-empty {
+  padding: 7px 12px;
+  border-radius: 999px;
+  color: white;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.stock-ok {
+  background: #22c55e;
+}
+
+.stock-critical {
+  background: #f59e0b;
+}
+
+.stock-empty {
+  background: #ef4444;
+}
