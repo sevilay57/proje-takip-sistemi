@@ -3,46 +3,53 @@ const router = express.Router();
 
 const Material = require("../models/Material");
 const authMiddleware = require("../middlewares/authMiddleware");
-
-router.post("/", authMiddleware, async (req, res) => {
+router.get("/", authMiddleware, async (req, res) => {
   try {
-    const { name, quantity, unit, unitPrice, supplierId } = req.body;
+    const materials = await Material.findAll();
 
- const material = await Material.create({
-  name,
-  quantity,
-  unit,
-  unitPrice,
-  supplierId,
-});
-
-    res.json({
-      message: "Malzeme eklendi",
-      material,
-    });
+    res.json(materials);
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({
       message: "Hata oluştu",
-      error: error.message,
     });
   }
 });
 
-router.get("/", authMiddleware, async (req, res) => {
-  const materials = await Material.findAll();
-  res.json(materials);
+router.post("/", authMiddleware, async (req, res) => {
+  try {
+    const {
+      name,
+      category,
+      quantity,
+      criticalStock,
+      unit,
+      unitPrice,
+      warehouseLocation,
+      description,
+      supplierId,
+    } = req.body;
+
+    const material = await Material.create({
+  materialCode: "MLZ-" + Date.now(),
+  name,
+  category,
+  quantity,
+  criticalStock,
+  unit,
+  unitPrice,
+  warehouseLocation,
+  description,
+  supplierId,
 });
 
-router.delete("/:id", authMiddleware, async (req, res) => {
-  await Material.destroy({
-    where: {
-      id: req.params.id,
-    },
-  });
-
-  res.json({
-    message: "Malzeme silindi",
-  });
+    res.status(201).json(material);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Hata oluştu",
+    });
+  }
 });
-
 module.exports = router;

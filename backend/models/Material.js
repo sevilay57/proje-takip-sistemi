@@ -6,7 +6,6 @@ const Material = sequelize.define("Material", {
   materialCode: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
   },
 
   name: {

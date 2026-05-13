@@ -74,7 +74,7 @@ app.get(
   }
 );
 
-sequelize.sync().then(async () => {
+sequelize.sync({ alter: true }).then(async () => {
 
   const hashedPassword = await bcrypt.hash("123456", 10);
 
