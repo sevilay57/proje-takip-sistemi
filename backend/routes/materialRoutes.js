@@ -32,6 +32,7 @@ router.post("/", authMiddleware, async (req, res) => {
     } = req.body;
 
     const material = await Material.create({
+      materialCode: "MLZ-" + Date.now(),
   materialCode: "MLZ-" + Date.now(),
   name,
   category,

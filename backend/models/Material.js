@@ -2,28 +2,14 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
 const Material = sequelize.define("Material", {
-
-  materialCode: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-
   name: {
     type: DataTypes.STRING,
-    allowNull: false,
+    materialCode: {
+  type: DataTypes.STRING,
+},
   },
 
   category: {
-    type: DataTypes.STRING,
-    defaultValue: "Genel",
-  },
-
-  brand: {
-    type: DataTypes.STRING,
-    defaultValue: "",
-  },
-
-  model: {
     type: DataTypes.STRING,
     defaultValue: "",
   },
@@ -31,6 +17,11 @@ const Material = sequelize.define("Material", {
   quantity: {
     type: DataTypes.INTEGER,
     defaultValue: 0,
+  },
+
+  criticalStock: {
+    type: DataTypes.INTEGER,
+    defaultValue: 10,
   },
 
   unit: {
@@ -41,11 +32,6 @@ const Material = sequelize.define("Material", {
   unitPrice: {
     type: DataTypes.FLOAT,
     defaultValue: 0,
-  },
-
-  criticalStock: {
-    type: DataTypes.INTEGER,
-    defaultValue: 5,
   },
 
   warehouseLocation: {
@@ -62,7 +48,6 @@ const Material = sequelize.define("Material", {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-
 });
 
 module.exports = Material;
