@@ -273,3 +273,30 @@ hr {
 .stock-empty {
   background: #ef4444;
 }
+.stock-ok {
+  background: #22c55e;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+.stock-critical {
+  background: #ef4444;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+.stock-empty {
+  background: #7f1d1d;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+#material-search {
+  margin-bottom: 20px;
+}

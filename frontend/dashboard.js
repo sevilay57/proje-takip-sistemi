@@ -424,22 +424,31 @@ async function showMaterials() {
 }
 
 async function loadMaterials() {
-  const response = await fetch("https://proje-takip-sistemi-1.onrender.com/api/materials", {
+  const materialResponse = await fetch("https://proje-takip-sistemi-1.onrender.com/api/materials", {
     headers: {
       Authorization: "Bearer " + token,
     },
   });
 
-  const materials = await response.json();
-  const materialList = document.getElementById("material-list");
+  const supplierResponse = await fetch("https://proje-takip-sistemi-1.onrender.com/api/suppliers", {
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  });
 
+  const materials = await materialResponse.json();
+  const suppliers = await supplierResponse.json();
+
+  const materialList = document.getElementById("material-list");
   materialList.innerHTML = "";
 
   materials.forEach((material) => {
     const quantity = Number(material.quantity || 0);
-    const criticalStock = Number(material.criticalStock || 0);
     const unitPrice = Number(material.unitPrice || 0);
     const totalValue = quantity * unitPrice;
+
+    const supplier = suppliers.find((s) => s.id == material.supplierId);
+    const supplierName = supplier ? supplier.name : "Tedarikçi yok";
 
     let stockStatus = "Yeterli Stok";
     let statusClass = "stock-ok";
@@ -447,7 +456,7 @@ async function loadMaterials() {
     if (quantity <= 0) {
       stockStatus = "Stok Bitti";
       statusClass = "stock-empty";
-    } else if (quantity <= criticalStock) {
+    } else if (quantity < 10) {
       stockStatus = "Kritik Stok";
       statusClass = "stock-critical";
     }
@@ -461,9 +470,9 @@ async function loadMaterials() {
 
         <p><strong>Kategori:</strong> ${material.category || "-"}</p>
         <p><strong>Miktar:</strong> ${quantity} ${material.unit || ""}</p>
-        <p><strong>Kritik Stok:</strong> ${criticalStock}</p>
         <p><strong>Birim Fiyat:</strong> ${unitPrice} ₺</p>
         <p><strong>Toplam Değer:</strong> ${totalValue} ₺</p>
+        <p><strong>Tedarikçi:</strong> ${supplierName}</p>
         <p><strong>Depo Konumu:</strong> ${material.warehouseLocation || "-"}</p>
         <p><strong>Açıklama:</strong> ${material.description || "-"}</p>
 
@@ -473,54 +482,6 @@ async function loadMaterials() {
       </div>
     `;
   });
-}
-
-async function addMaterial(event) {
-  if (event) event.preventDefault();
-
-  localStorage.setItem("activeSection", "materials");
-
-  const name = document.getElementById("material-name").value;
-  const category = document.getElementById("material-category").value;
-  const quantity = document.getElementById("material-quantity").value;
-  const criticalStock = document.getElementById("material-critical").value;
-  const unit = document.getElementById("material-unit").value;
-  const unitPrice = document.getElementById("material-price").value;
-  const warehouseLocation = document.getElementById("material-location").value;
-  const description = document.getElementById("material-description").value;
-  const supplierId = document.getElementById("material-supplier").value;
-
-  await fetch("https://proje-takip-sistemi-1.onrender.com/api/materials", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token,
-    },
-    body: JSON.stringify({
-      name,
-      category,
-      quantity,
-      criticalStock,
-      unit,
-      unitPrice,
-      warehouseLocation,
-      description,
-      supplierId,
-    }),
-  });
-
-  document.getElementById("material-name").value = "";
-  document.getElementById("material-category").value = "";
-  document.getElementById("material-quantity").value = "";
-  document.getElementById("material-critical").value = "";
-  document.getElementById("material-unit").value = "";
-  document.getElementById("material-price").value = "";
-  document.getElementById("material-location").value = "";
-  document.getElementById("material-description").value = "";
-  document.getElementById("material-supplier").value = "";
-
-  await loadSupplierOptions();
-  await loadMaterials();
 }
 
 async function deleteMaterial(id, event) {
@@ -1340,4 +1301,84 @@ async function showReports() {
 
   document.getElementById("report-project-count").innerText =
     projects.length;
+}
+console.log("dashboard js çalıştı");
+function filterMaterials() {
+  const searchValue = document
+    .getElementById("material-search")
+    .value
+    .toLowerCase();
+
+  const cards = document.querySelectorAll(".material-card");
+
+  cards.forEach((card) => {
+    const text = card.innerText.toLowerCase();
+
+    if (text.includes(searchValue)) {
+      card.style.display = "block";
+    } else {
+      card.style.display = "none";
+    }
+  });
+}
+async function addMaterial(event) {
+  if (event) {
+    event.preventDefault();
+  }
+
+  const token = localStorage.getItem("token");
+
+  const name = document.getElementById("material-name").value;
+  const category = document.getElementById("material-category").value;
+  const quantity = document.getElementById("material-quantity").value;
+  const criticalStock = document.getElementById("material-critical").value;
+  const unit = document.getElementById("material-unit").value;
+  const unitPrice = document.getElementById("material-price").value;
+  const warehouseLocation = document.getElementById("material-location").value;
+  const description = document.getElementById("material-description").value;
+  const supplierId = document.getElementById("material-supplier").value;
+
+  try {
+    const response = await fetch("https://proje-takip-sistemi-1.onrender.com/api/materials", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+      body: JSON.stringify({
+        name,
+        category,
+        quantity,
+        criticalStock,
+        unit,
+        unitPrice,
+        warehouseLocation,
+        description,
+        supplierId,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert("Malzeme eklendi");
+
+      loadMaterials();
+
+      document.getElementById("material-name").value = "";
+      document.getElementById("material-category").value = "";
+      document.getElementById("material-quantity").value = "";
+      document.getElementById("material-critical").value = "";
+      document.getElementById("material-unit").value = "";
+      document.getElementById("material-price").value = "";
+      document.getElementById("material-location").value = "";
+      document.getElementById("material-description").value = "";
+      document.getElementById("material-supplier").value = "";
+    } else {
+      alert(data.message || "Malzeme eklenemedi");
+    }
+  } catch (error) {
+    console.log(error);
+    alert("Sunucu hatası");
+  }
 }
