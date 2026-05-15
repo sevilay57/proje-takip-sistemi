@@ -33,15 +33,31 @@ router.get("/", authMiddleware, async (req, res) => {
 });
 
 router.delete("/:id", authMiddleware, async (req, res) => {
-  await Company.destroy({
-    where: {
-      id: req.params.id,
-    },
-  });
+  try {
+    const deleted = await Company.destroy({
+      where: {
+        id: req.params.id,
+      },
+    });
 
-  res.json({
-    message: "Firma silindi",
-  });
+    if (deleted === 0) {
+      return res.status(404).json({
+        message: "Firma bulunamadı",
+      });
+    }
+
+    res.json({
+      message: "Firma silindi",
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: "Firma silinemedi. Bu firma tekliflerde kullanılıyor olabilir.",
+      error: error.message,
+    });
+
+  }
 });
 
 module.exports = router;
