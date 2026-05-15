@@ -100,6 +100,7 @@ async function showProjects() {
   hideAllSections();
 
   document.getElementById("project-form").style.display = "block";
+  document.getElementById("project-search").style.display = "block";
 
   const projectList = document.getElementById("project-list");
 
@@ -116,87 +117,124 @@ async function showProjects() {
 
   projects.forEach((project) => {
     projectList.innerHTML += `
-      <div class="project-card ${getProjectClass(project.endDate)}">
-        <h3>${project.title}</h3>
+      <div class="category-box">
 
-        <p>${project.description}</p>
+        <div class="category-header"
+             onclick="toggleProjectBox('project-box-${project.id}')">
 
-        <p><strong>Başlangıç:</strong> ${project.startDate || "-"}</p>
-        <p><strong>Bitiş:</strong> ${project.endDate || "-"}</p>
+          <h2>${project.title}</h2>
 
-        <span>${getProjectStatus(project.endDate)}</span>
+        </div>
 
-        <br><br>
+        <div
+          class="category-materials"
+          id="project-box-${project.id}"
+          style="display:none;"
+        >
 
-        <button type="button" onclick="deleteProject(${project.id})">
-          Projeyi Sil
-        </button>
+          <div class="project-card ${getProjectClass(project.endDate)}">
 
-        <hr>
+            <p>${project.description}</p>
 
-        <select id="personnel-select-${project.id}">
-          <option value="">Personel seç</option>
-        </select>
+            <p><strong>Başlangıç:</strong> ${project.startDate || "-"}</p>
+            <p><strong>Bitiş:</strong> ${project.endDate || "-"}</p>
 
-        <button type="button" onclick="assignPersonnel(${project.id}, event)">
-          Personel Ata
-        </button>
+            <span>${getProjectStatus(project.endDate)}</span>
 
-        <div class="project-mini-box"
-     onclick="toggleProjectMiniBox('personnel-box-${project.id}')">
+            <br><br>
 
-  <h4>Atanan Personeller</h4>
+            <button type="button" onclick="deleteProject(${project.id})">
+              Projeyi Sil
+            </button>
 
-  <div
-    class="project-mini-content"
-    id="personnel-box-${project.id}"
-    style="display:none;"
-  >
+            <hr>
 
-    <div id="assigned-personnel-${project.id}"></div>
+          <button type="button" onclick="toggleProjectMiniBox('personnel-assign-box-${project.id}')">
+  Personel Ata
+</button>
 
-  </div>
+<div
+  id="personnel-assign-box-${project.id}"
+  style="display:none; margin-top:10px;"
+>
+  <select id="personnel-select-${project.id}">
+    <option value="">Personel seç</option>
+  </select>
 
+  <button type="button" onclick="assignPersonnel(${project.id}, event)">
+    Onayla
+  </button>
 </div>
-        <hr>
 
-<select id="material-select-${project.id}">
-  <option value="">Malzeme seç</option>
-</select>
+            <div class="project-mini-box"
+                 onclick="toggleProjectMiniBox('personnel-box-${project.id}')">
 
-<input
-  type="number"
-  id="material-quantity-${project.id}"
-  placeholder="Kullanılacak miktar"
-/>
+              <h4>Atanan Personeller</h4>
 
-<button type="button" onclick="addMaterialToProject(${project.id}, event)">
+              <div
+                class="project-mini-content"
+                id="personnel-box-${project.id}"
+                style="display:none;"
+              >
+                <div id="assigned-personnel-${project.id}"></div>
+              </div>
+
+            </div>
+
+            <hr>
+<button type="button"
+        onclick="toggleProjectMiniBox('material-use-box-${project.id}')">
   Malzeme Kullan
 </button>
 
-<div class="project-mini-box"
-     onclick="toggleProjectMiniBox('materials-box-${project.id}')">
+<div
+  id="material-use-box-${project.id}"
+  style="display:none; margin-top:10px;"
+>
 
-  <h4>Kullanılan Malzemeler</h4>
+  <select id="material-select-${project.id}">
+    <option value="">Malzeme seç</option>
+  </select>
 
-  <div
-    class="project-mini-content"
-    id="materials-box-${project.id}"
-    style="display:none;"
-  >
+  <input
+    type="number"
+    id="material-quantity-${project.id}"
+    placeholder="Kullanılacak miktar"
+  />
 
-    <div id="used-materials-${project.id}"></div>
-
-  </div>
+  <button type="button"
+          onclick="addMaterialToProject(${project.id}, event)">
+    Onayla
+  </button>
 
 </div>
+
+            <div class="project-mini-box"
+                 onclick="toggleProjectMiniBox('materials-box-${project.id}')">
+
+              <h4>Kullanılan Malzemeler</h4>
+
+              <div
+                class="project-mini-content"
+                id="materials-box-${project.id}"
+                style="display:none;"
+              >
+                <div id="used-materials-${project.id}"></div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
     `;
 
     loadPersonnelOptions(project.id);
     loadAssignedPersonnel(project.id);
     loadMaterialOptions(project.id);
-loadUsedMaterials(project.id);
+    loadUsedMaterials(project.id);
   });
 }
 
@@ -274,6 +312,7 @@ async function showPersonnel() {
   hideAllSections();
 
   document.getElementById("personnel-section").style.display = "block";
+  document.getElementById("project-search").style.display = "none";
 
   const response = await fetch("https://proje-takip-sistemi-3.onrender.com/api/personnel", {
     headers: {
@@ -282,23 +321,103 @@ async function showPersonnel() {
   });
 
   const personnels = await response.json();
+
+  const projectsResponse = await fetch(
+    "https://proje-takip-sistemi-3.onrender.com/api/projects",
+    {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    }
+  );
+
+  const projects = await projectsResponse.json();
+
   const personnelList = document.getElementById("personnel-list");
 
   personnelList.innerHTML = "";
 
   personnels.forEach((personnel) => {
+
+    const assignedProjects = projects.filter(project =>
+      project.Personnels &&
+      project.Personnels.some(p => p.id === personnel.id)
+    );
+
     personnelList.innerHTML += `
-      <div class="personnel-card">
-        <h3>${personnel.name}</h3>
+      <div class="category-box">
 
-        <p><strong>Meslek:</strong> ${personnel.department || "-"}</p>
-        <p><strong>Departman:</strong> ${personnel.title || "-"}</p>
-        <p><strong>Telefon:</strong> ${personnel.phone || "-"}</p>
-        <p><strong>E-posta:</strong> ${personnel.email || "-"}</p>
+        <div class="category-header"
+             onclick="toggleProjectMiniBox('personnel-detail-${personnel.id}')">
 
-        <button type="button" onclick="deletePersonnel(${personnel.id})">
-          Personeli Sil
-        </button>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+
+            <h3>${personnel.name}</h3>
+
+            <span>
+            ${personnel.title || "-"}
+            </span>
+
+          </div>
+
+        </div>
+
+        <div
+          class="category-materials"
+          id="personnel-detail-${personnel.id}"
+          style="display:none;"
+        >
+
+          <div class="personnel-card">
+
+            <p>
+              <strong>Meslek:</strong>
+              ${personnel.title || "-"}
+            </p>
+
+            <p>
+              <strong>Telefon:</strong>
+              ${personnel.phone || "-"}
+            </p>
+
+            <p>
+              <strong>E-posta:</strong>
+              ${personnel.email || "-"}
+            </p>
+
+            <hr>
+
+            <h4>Projeler</h4>
+
+            ${
+              assignedProjects.length > 0
+                ? assignedProjects.map(project => `
+                  <div class="assigned-project-item">
+
+                    <strong>${project.title}</strong>
+
+                    <span>
+                      ${getProjectStatus(project.endDate)}
+                    </span>
+
+                  </div>
+                `).join("")
+                : "<p>Henüz proje atanmadı.</p>"
+            }
+
+            <br>
+
+            <button
+              type="button"
+              onclick="deletePersonnel(${personnel.id})"
+            >
+              Personeli Sil
+            </button>
+
+          </div>
+
+        </div>
+
       </div>
     `;
   });
@@ -407,7 +526,7 @@ async function loadAssignedPersonnel(projectId) {
   const personnels = await response.json();
   const assignedDiv = document.getElementById(`assigned-personnel-${projectId}`);
 
-  assignedDiv.innerHTML = "<h4>Atanan Personeller</h4>";
+  assignedDiv.innerHTML = "";
 
   if (personnels.length === 0) {
     assignedDiv.innerHTML += "<p>Henüz personel atanmadı.</p>";
@@ -1209,7 +1328,6 @@ async function loadUsedMaterials(projectId) {
   );
 
 div.innerHTML = `
-  <h4>Kullanılan Malzemeler</h4>
 
   <table class="used-material-table">
     <thead>
@@ -1825,6 +1943,15 @@ function toggleProjectMiniBox(id) {
     console.log("Bulunamadı:", id);
     return;
   }
+
+  if (div.style.display === "none" || div.style.display === "") {
+    div.style.display = "block";
+  } else {
+    div.style.display = "none";
+  }
+}
+function toggleProjectBox(id) {
+  const div = document.getElementById(id);
 
   if (div.style.display === "none" || div.style.display === "") {
     div.style.display = "block";
