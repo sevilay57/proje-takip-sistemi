@@ -5,6 +5,10 @@ const ProjectMaterial = require("../models/ProjectMaterial");
 const Material = require("../models/Material");
 const authMiddleware = require("../middlewares/authMiddleware");
 
+ProjectMaterial.belongsTo(Material, {
+  foreignKey: "materialId",
+});
+
 router.post("/", authMiddleware, async (req, res) => {
   try {
     const { projectId, materialId, quantityUsed } = req.body;
@@ -39,7 +43,6 @@ router.post("/", authMiddleware, async (req, res) => {
       message: "Malzeme projeye eklendi",
       projectMaterial,
     });
-
   } catch (error) {
     res.status(500).json({
       message: "Hata oluştu",
@@ -53,6 +56,7 @@ router.get("/:projectId", authMiddleware, async (req, res) => {
     where: {
       projectId: req.params.projectId,
     },
+    include: Material,
   });
 
   res.json(usedMaterials);

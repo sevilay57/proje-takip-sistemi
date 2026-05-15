@@ -328,3 +328,53 @@ hr {
 .category-materials {
   margin-top: 12px;
 }
+.project-mini-box {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 14px;
+  margin-top: 12px;
+  cursor: pointer;
+  border: 1px solid #e5e7eb;
+}
+
+.project-mini-box h4 {
+  margin: 0;
+  color: #111827;
+}
+
+.project-mini-content {
+  display: none;
+  margin-top: 12px;
+}
+
+.project-mini-item {
+  background: white;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+.used-material-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 14px;
+}
+
+.used-material-table th,
+.used-material-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+.used-material-table th {
+  background: #f3f4f6;
+  font-weight: 700;
+}
+
+.used-material-table tr:hover {
+  background: #f9fafb;
+}

@@ -142,7 +142,22 @@ async function showProjects() {
           Personel Ata
         </button>
 
-        <div id="assigned-personnel-${project.id}"></div>
+        <div class="project-mini-box"
+     onclick="toggleProjectMiniBox('personnel-box-${project.id}')">
+
+  <h4>Atanan Personeller</h4>
+
+  <div
+    class="project-mini-content"
+    id="personnel-box-${project.id}"
+    style="display:none;"
+  >
+
+    <div id="assigned-personnel-${project.id}"></div>
+
+  </div>
+
+</div>
         <hr>
 
 <select id="material-select-${project.id}">
@@ -159,7 +174,22 @@ async function showProjects() {
   Malzeme Kullan
 </button>
 
-<div id="used-materials-${project.id}"></div>
+<div class="project-mini-box"
+     onclick="toggleProjectMiniBox('materials-box-${project.id}')">
+
+  <h4>Kullanılan Malzemeler</h4>
+
+  <div
+    class="project-mini-content"
+    id="materials-box-${project.id}"
+    style="display:none;"
+  >
+
+    <div id="used-materials-${project.id}"></div>
+
+  </div>
+
+</div>
       </div>
     `;
 
@@ -588,6 +618,17 @@ delete groupedMaterials["Diğer"];
 
 }
 function toggleCategory(category) {
+  function toggleProjectMiniBox(id) {
+
+  const div = document.getElementById(id);
+
+  if (div.style.display === "none") {
+    div.style.display = "block";
+  } else {
+    div.style.display = "none";
+  }
+
+}
   const div = document.getElementById(`category-${category}`);
 
   if (div.style.display === "none") {
@@ -756,7 +797,10 @@ async function showOffers() {
 
   offerList.innerHTML = "";
 
-  offers.forEach((offer) => {
+  const activeOffers = offers.filter(
+  (offer) => offer.status !== "Reddedildi"
+);
+  activeOffers.forEach((offer) => {
     offerList.innerHTML += `
       <div class="offer-card">
         <h3>${offer.title}</h3>
@@ -766,12 +810,26 @@ async function showOffers() {
         <p><strong>Durum:</strong> ${offer.status}</p>
 
         <button type="button" onclick="rejectOffer(${offer.id})">Reddet</button>
-        <input
-  type="date"
-  id="offer-project-date-${offer.id}"
-  value="${new Date().toISOString().split('T')[0]}"
-/>
-        <button type="button" onclick="createProjectFromOffer(${offer.id})">Projeye Dönüştür</button>
+        <button type="button" onclick="showOfferProjectDates(${offer.id})">
+  Projeye Dönüştür
+</button>
+
+<div id="offer-date-box-${offer.id}" style="display:none; margin-top:15px;">
+  <input
+    type="date"
+    id="offer-start-date-${offer.id}"
+    value="${new Date().toISOString().split('T')[0]}"
+  />
+
+  <input
+    type="date"
+    id="offer-end-date-${offer.id}"
+  />
+
+  <button type="button" onclick="createProjectFromOffer(${offer.id})">
+    Onayla ve Projeye Aktar
+  </button>
+</div>
         <button type="button" onclick="deleteOffer(${offer.id})">Sil</button>
         <button type="button" onclick="printOffer(${offer.id})">
   PDF Oluştur
@@ -882,11 +940,34 @@ async function rejectOffer(id) {
 
   await showOffers();
 }
+async function deleteOffer(id) {
+  await fetch(`https://proje-takip-sistemi-3.onrender.com/api/offers/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  });
 
+  await showOffers();
+}
+
+function showOfferProjectDates(id) {
+  document.getElementById(`offer-date-box-${id}`).style.display = "block";
+}
 async function createProjectFromOffer(id) {
-  const projectDate = document.getElementById(
-    `offer-project-date-${id}`
+
+  const startDate = document.getElementById(
+    `offer-start-date-${id}`
   ).value;
+
+  const endDate = document.getElementById(
+    `offer-end-date-${id}`
+  ).value;
+
+  if (!endDate) {
+    alert("Bitiş tarihi seç");
+    return;
+  }
 
   await fetch(`https://proje-takip-sistemi-3.onrender.com/api/offers/${id}/create-project`, {
     method: "POST",
@@ -895,11 +976,12 @@ async function createProjectFromOffer(id) {
       Authorization: "Bearer " + token,
     },
     body: JSON.stringify({
-      startDate: projectDate,
+      startDate,
+      endDate,
     }),
   });
 
-  alert("Teklif projeye aktarıldı");
+  alert("Proje oluşturuldu");
 
   await showOffers();
 }
@@ -1126,40 +1208,47 @@ async function loadUsedMaterials(projectId) {
     `used-materials-${projectId}`
   );
 
-  div.innerHTML = `
-    <h4>Kullanılan Malzemeler</h4>
-  `;
+div.innerHTML = `
+  <h4>Kullanılan Malzemeler</h4>
+
+  <table class="used-material-table">
+    <thead>
+      <tr>
+        <th>Malzeme</th>
+        <th>Kullanılan</th>
+        <th>Maliyet</th>
+      </tr>
+    </thead>
+    <tbody id="used-material-table-${projectId}">
+    </tbody>
+  </table>
+`;
+
+const tableBody = document.getElementById(`used-material-table-${projectId}`);
 
   let totalCost = 0;
 
   materials.forEach((material) => {
 
-    totalCost += material.totalCost;
+  totalCost += material.totalCost;
 
-    div.innerHTML += `
-      <div class="used-material-item">
+  tableBody.innerHTML += `
+    <tr>
+      <td>
+        ${material.Material ? material.Material.name : material.materialId}
+      </td>
 
-        <p>
-          Malzeme:
-${material.Material ? material.Material.name : material.materialId}
-        </p>
+      <td>
+        ${material.quantityUsed}
+      </td>
 
-        <p>
-          Kullanılan:
-          ${material.quantityUsed}
-        </p>
+      <td>
+        ${material.totalCost} ₺
+      </td>
+    </tr>
+  `;
 
-        <p>
-          Maliyet:
-          ${material.totalCost} ₺
-        </p>
-
-        <hr>
-
-      </div>
-    `;
-
-  });
+});
 
  const projectResponse = await fetch(
   "https://proje-takip-sistemi-3.onrender.com/api/projects",
@@ -1727,5 +1816,19 @@ function autoDetectMaterial() {
     location.value = "E-1";
     unit.value = "adet";
     code.value = "BGL-CVT-" + Date.now().toString().slice(-4);
+  }
+}
+function toggleProjectMiniBox(id) {
+  const div = document.getElementById(id);
+
+  if (!div) {
+    console.log("Bulunamadı:", id);
+    return;
+  }
+
+  if (div.style.display === "none" || div.style.display === "") {
+    div.style.display = "block";
+  } else {
+    div.style.display = "none";
   }
 }
