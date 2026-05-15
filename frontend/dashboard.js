@@ -765,8 +765,12 @@ async function showOffers() {
         <p><strong>Tutar:</strong> ${offer.amount} ₺</p>
         <p><strong>Durum:</strong> ${offer.status}</p>
 
-        <button type="button" onclick="approveOffer(${offer.id})">Onayla</button>
         <button type="button" onclick="rejectOffer(${offer.id})">Reddet</button>
+        <input
+  type="date"
+  id="offer-project-date-${offer.id}"
+  value="${new Date().toISOString().split('T')[0]}"
+/>
         <button type="button" onclick="createProjectFromOffer(${offer.id})">Projeye Dönüştür</button>
         <button type="button" onclick="deleteOffer(${offer.id})">Sil</button>
         <button type="button" onclick="printOffer(${offer.id})">
@@ -880,29 +884,25 @@ async function rejectOffer(id) {
 }
 
 async function createProjectFromOffer(id) {
+  const projectDate = document.getElementById(
+    `offer-project-date-${id}`
+  ).value;
+
   await fetch(`https://proje-takip-sistemi-3.onrender.com/api/offers/${id}/create-project`, {
     method: "POST",
     headers: {
+      "Content-Type": "application/json",
       Authorization: "Bearer " + token,
     },
+    body: JSON.stringify({
+      startDate: projectDate,
+    }),
   });
 
-  alert("Teklif projeye dönüştürüldü");
+  alert("Teklif projeye aktarıldı");
 
   await showOffers();
 }
-
-async function deleteOffer(id) {
-  await fetch(`https://proje-takip-sistemi-3.onrender.com/api/offers/${id}`, {
-    method: "DELETE",
-    headers: {
-      Authorization: "Bearer " + token,
-    },
-  });
-
-  await showOffers();
-}
-
 /* TEDARİKÇİLER */
 
 async function showSuppliers() {

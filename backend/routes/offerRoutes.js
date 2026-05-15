@@ -3,11 +3,12 @@ const router = express.Router();
 
 const Offer = require("../models/Offer");
 const Company = require("../models/Company");
+const Project = require("../models/Project");
+const authMiddleware = require("../middlewares/authMiddleware");
+
 Offer.belongsTo(Company, {
   foreignKey: "companyId",
 });
-const Project = require("../models/Project");
-const authMiddleware = require("../middlewares/authMiddleware");
 
 router.post("/", authMiddleware, async (req, res) => {
   try {
@@ -33,8 +34,9 @@ router.post("/", authMiddleware, async (req, res) => {
 
 router.get("/", authMiddleware, async (req, res) => {
   const offers = await Offer.findAll({
-  include: Company,
-});
+    include: Company,
+  });
+
   res.json(offers);
 });
 
@@ -59,27 +61,35 @@ router.put("/:id/status", authMiddleware, async (req, res) => {
 });
 
 router.post("/:id/create-project", authMiddleware, async (req, res) => {
-  const offer = await Offer.findByPk(req.params.id);
+  try {
+    const offer = await Offer.findByPk(req.params.id);
 
-  if (!offer) {
-    return res.status(404).json({
-      message: "Teklif bulunamadı",
+    if (!offer) {
+      return res.status(404).json({
+        message: "Teklif bulunamadı",
+      });
+    }
+
+    const project = await Project.create({
+      title: offer.title,
+      description: "Tekliften oluşturulan proje",
+      status: "Devam Ediyor",
+      startDate: req.body.startDate,
+      offerAmount: offer.amount,
+    });
+
+    await offer.destroy();
+
+    res.json({
+      message: "Teklif projeye aktarıldı ve teklif listesinden silindi",
+      project,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Hata oluştu",
+      error: error.message,
     });
   }
-
-  const project = await Project.create({
-    title: offer.title,
-    description: "Tekliften oluşturulan proje",
-    status: "Devam Ediyor",
-  });
-
-  offer.status = "Onaylandı";
-  await offer.save();
-
-  res.json({
-    message: "Teklif projeye dönüştürüldü",
-    project,
-  });
 });
 
 router.delete("/:id", authMiddleware, async (req, res) => {
