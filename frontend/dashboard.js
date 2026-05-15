@@ -424,64 +424,177 @@ async function showMaterials() {
 }
 
 async function loadMaterials() {
-  const materialResponse = await fetch("https://proje-takip-sistemi-3.onrender.com/api/materials", {
-    headers: {
-      Authorization: "Bearer " + token,
-    },
-  });
 
-  const supplierResponse = await fetch("https://proje-takip-sistemi-3.onrender.com/api/suppliers", {
-    headers: {
-      Authorization: "Bearer " + token,
-    },
-  });
+  const materialResponse = await fetch(
+    "https://proje-takip-sistemi-3.onrender.com/api/materials",
+    {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    }
+  );
+
+  const supplierResponse = await fetch(
+    "https://proje-takip-sistemi-3.onrender.com/api/suppliers",
+    {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    }
+  );
 
   const materials = await materialResponse.json();
   const suppliers = await supplierResponse.json();
 
   const materialList = document.getElementById("material-list");
+
   materialList.innerHTML = "";
 
+
+  const groupedMaterials = {
+  "Elektrik": [],
+  "Mekanik": [],
+  "Pnömatik": [],
+  "Hidrolik": [],
+  "Bağlantı Elemanı": [],
+  "Sarf Malzeme": [],
+};
+delete groupedMaterials[""];
+delete groupedMaterials["PLC"];
+delete groupedMaterials["Diğer"];
   materials.forEach((material) => {
-    const quantity = Number(material.quantity || 0);
-    const unitPrice = Number(material.unitPrice || 0);
-    const totalValue = quantity * unitPrice;
 
-    const supplier = suppliers.find((s) => s.id == material.supplierId);
-    const supplierName = supplier ? supplier.name : "Tedarikçi yok";
+    let category = material.category;
+    if (category.toLowerCase() === "sarf") {
+  category = "Sarf Malzeme";
+}
 
-    let stockStatus = "Yeterli Stok";
-    let statusClass = "stock-ok";
+    if (groupedMaterials[category]) {
+  groupedMaterials[category].push(material);
+}
 
-    if (quantity <= 0) {
-      stockStatus = "Stok Bitti";
-      statusClass = "stock-empty";
-    } else if (quantity < 10) {
-      stockStatus = "Kritik Stok";
-      statusClass = "stock-critical";
-    }
+  });
+
+  Object.keys(groupedMaterials).forEach((category) => {
 
     materialList.innerHTML += `
-      <div class="material-card">
-        <div class="material-header">
-          <h3>${material.name}</h3>
-          <span class="${statusClass}">${stockStatus}</span>
+      <div class="category-box">
+
+        <div class="category-header"
+             onclick="toggleCategory('${category}')">
+
+          <h2>${category}</h2>
+
         </div>
 
-        <p><strong>Kategori:</strong> ${material.category || "-"}</p>
-        <p><strong>Miktar:</strong> ${quantity} ${material.unit || ""}</p>
-        <p><strong>Birim Fiyat:</strong> ${unitPrice} ₺</p>
-        <p><strong>Toplam Değer:</strong> ${totalValue} ₺</p>
-        <p><strong>Tedarikçi:</strong> ${supplierName}</p>
-        <p><strong>Depo Konumu:</strong> ${material.warehouseLocation || "-"}</p>
-        <p><strong>Açıklama:</strong> ${material.description || "-"}</p>
+        <div
+          class="category-materials"
+          id="category-${category}"
+          style="display:none;"
+        >
+        </div>
 
-        <button type="button" onclick="deleteMaterial(${material.id}, event)">
-          Malzeme Sil
-        </button>
       </div>
     `;
+
+    const categoryDiv = document.getElementById(`category-${category}`);
+
+    groupedMaterials[category].forEach((material) => {
+
+      const quantity = Number(material.quantity || 0);
+      const unitPrice = Number(material.unitPrice || 0);
+
+      const totalValue = quantity * unitPrice;
+
+      const supplier = suppliers.find(
+        (s) => s.id == material.supplierId
+      );
+
+      const supplierName = supplier
+        ? supplier.name
+        : "Tedarikçi yok";
+
+      let stockStatus = `Kalan: ${quantity} ${material.unit || ""}`;
+      let statusClass = "stock-ok";
+
+      if (quantity <= 0) {
+
+        stockStatus = "Stok Bitti";
+        statusClass = "stock-empty";
+
+      } else if (quantity < 10) {
+
+        stockStatus = `Kalan: ${quantity} ${material.unit || ""}`;
+        statusClass = "stock-critical";
+
+      }
+
+      categoryDiv.innerHTML += `
+        <div class="material-card">
+
+          <div class="material-header">
+
+            <h3>${material.name}</h3>
+
+            <span class="${statusClass}">
+              ${stockStatus}
+            </span>
+
+          </div>
+
+          <p>
+            <strong>Tür:</strong>
+            ${material.type || "-"}
+          </p>
+
+          <p>
+            <strong>Miktar:</strong>
+            ${quantity} ${material.unit || ""}
+          </p>
+
+          <p>
+            <strong>Birim Fiyat:</strong>
+            ${unitPrice} ₺
+          </p>
+
+          <p>
+            <strong>Toplam Değer:</strong>
+            ${totalValue} ₺
+          </p>
+
+          <p>
+            <strong>Depo Konumu:</strong>
+            ${material.warehouseLocation || "-"}
+          </p>
+
+          <p>
+            <strong>Tedarikçi:</strong>
+            ${supplierName}
+          </p>
+
+          <button
+            type="button"
+            onclick="deleteMaterial(${material.id}, event)"
+          >
+            Malzeme Sil
+          </button>
+
+        </div>
+      `;
+
+    });
+
   });
+
+}
+function toggleCategory(category) {
+  const div = document.getElementById(`category-${category}`);
+
+  if (div.style.display === "none") {
+    div.style.display = "block";
+  } else {
+    div.style.display = "none";
+  }
 }
 
 async function deleteMaterial(id, event) {
@@ -498,7 +611,7 @@ async function deleteMaterial(id, event) {
 
   await loadMaterials();
 }
-
+ 
 async function loadSupplierOptions() {
   const response = await fetch("https://proje-takip-sistemi-3.onrender.com/api/suppliers", {
     headers: {
@@ -559,9 +672,26 @@ async function showCompanies() {
 
 async function addCompany() {
   const name = document.getElementById("company-name").value;
+  const code = document.getElementById("company-code").value;
+  const type = document.getElementById("company-type").value;
+  const authorized = document.getElementById("company-authorized").value;
+
   const phone = document.getElementById("company-phone").value;
   const email = document.getElementById("company-email").value;
+
+  const taxNumber = document.getElementById("company-tax-number").value;
+  const taxOffice = document.getElementById("company-tax-office").value;
+
   const address = document.getElementById("company-address").value;
+
+  const balance = document.getElementById("company-balance").value;
+  const currency = document.getElementById("company-currency").value;
+
+  const paymentType = document.getElementById("company-payment-type").value;
+  const dueDay = document.getElementById("company-due-day").value;
+
+  const status = document.getElementById("company-status").value;
+  const notes = document.getElementById("company-notes").value;
 
   await fetch("https://proje-takip-sistemi-3.onrender.com/api/companies", {
     method: "POST",
@@ -569,21 +699,29 @@ async function addCompany() {
       "Content-Type": "application/json",
       Authorization: "Bearer " + token,
     },
+
     body: JSON.stringify({
       name,
+      code,
+      type,
+      authorized,
       phone,
       email,
+      taxNumber,
+      taxOffice,
       address,
+      balance,
+      currency,
+      paymentType,
+      dueDay,
+      status,
+      notes,
     }),
   });
 
-  document.getElementById("company-name").value = "";
-  document.getElementById("company-phone").value = "";
-  document.getElementById("company-email").value = "";
-  document.getElementById("company-address").value = "";
-
-  await showCompanies();
+  loadCompanies();
 }
+
 
 async function deleteCompany(id) {
   await fetch(`https://proje-takip-sistemi-3.onrender.com/api/companies/${id}`, {
@@ -1056,7 +1194,7 @@ div.innerHTML += `
   </h3>
 
   <h3 style="
-  color: ${difference > 0 ? '#ef4444' : '#22c55e'};
+  color: ${difference < 0 ? '#ef4444' : '#22c55e'};
 ">
   Fark:
   ${difference} ₺
@@ -1380,5 +1518,214 @@ async function addMaterial(event) {
   } catch (error) {
     console.log(error);
     alert("Sunucu hatası");
+  }
+}
+function updateMaterialTypes() {
+  const category = document.getElementById("material-category").value;
+  const typeSelect = document.getElementById("material-type");
+
+  const types = {
+    Elektrik: ["PLC", "Röle", "Kablo", "Sensör", "Kontaktör", "Güç Kaynağı"],
+    Mekanik: ["Rulman", "Mil", "Lineer Kızak", "Kaplin", "Dişli"],
+    Pnömatik: ["Valf", "Hava Silindiri", "Hortum", "Regülatör"],
+    Hidrolik: ["Hidrolik Pompa", "Hidrolik Valf", "Hidrolik Hortum"],
+    "Bağlantı Elemanı": ["Cıvata", "Somun", "Pul", "Rakor"],
+    "Sarf Malzeme": ["Bant", "Yağ", "Sprey", "Eldiven"],
+  };
+
+  typeSelect.innerHTML = `<option value="">Malzeme Türü Seç</option>`;
+
+  if (!types[category]) return;
+
+  types[category].forEach((type) => {
+    typeSelect.innerHTML += `<option value="${type}">${type}</option>`;
+  });
+}
+
+function autoFillMaterialInfo() {
+  const category = document.getElementById("material-category").value;
+  const type = document.getElementById("material-type").value;
+
+  const codeInput = document.getElementById("material-code");
+  const locationSelect = document.getElementById("material-location");
+
+  const categoryCodes = {
+    Elektrik: "ELK",
+    Mekanik: "MEK",
+    Pnömatik: "PNO",
+    Hidrolik: "HDR",
+    "Bağlantı Elemanı": "BGL",
+    "Sarf Malzeme": "SRF",
+  };
+
+  const locations = {
+    PLC: "A-1",
+    Röle: "A-2",
+    Kablo: "A-3",
+    Sensör: "A-3",
+    Kontaktör: "A-2",
+    "Güç Kaynağı": "A-1",
+
+    Rulman: "B-1",
+    Mil: "B-2",
+    "Lineer Kızak": "B-3",
+    Kaplin: "B-2",
+    Dişli: "B-3",
+
+    Valf: "C-1",
+    "Hava Silindiri": "C-2",
+    Hortum: "C-3",
+    Regülatör: "C-1",
+
+    "Hidrolik Pompa": "D-1",
+    "Hidrolik Valf": "D-2",
+    "Hidrolik Hortum": "D-2",
+
+    Cıvata: "E-1",
+    Somun: "E-1",
+    Pul: "E-1",
+    Rakor: "E-2",
+
+    Bant: "E-2",
+    Yağ: "D-2",
+    Sprey: "E-2",
+    Eldiven: "E-2",
+  };
+
+  if (locations[type]) {
+    locationSelect.value = locations[type];
+  }
+
+  if (categoryCodes[category] && type) {
+    const randomNumber = Math.floor(100 + Math.random() * 900);
+    codeInput.value = `${categoryCodes[category]}-${randomNumber}`;
+  }
+}
+function autoDetectMaterial() {
+  const name = document.getElementById("material-name").value.toLowerCase();
+
+  const category = document.getElementById("material-category");
+  const type = document.getElementById("material-type");
+  const location = document.getElementById("material-location");
+
+  if (name.includes("plc")) {
+    category.value = "Elektrik";
+    updateMaterialTypes();
+    type.value = "PLC";
+    location.value = "A-1";
+  } else if (name.includes("röle") || name.includes("role")) {
+    category.value = "Elektrik";
+    updateMaterialTypes();
+    type.value = "Röle";
+    location.value = "A-2";
+  } else if (name.includes("kablo")) {
+    category.value = "Elektrik";
+    updateMaterialTypes();
+    type.value = "Kablo";
+    location.value = "A-3";
+  } else if (name.includes("rulman")) {
+    category.value = "Mekanik";
+    updateMaterialTypes();
+    type.value = "Rulman";
+    location.value = "B-1";
+  } else if (name.includes("valf")) {
+    category.value = "Pnömatik";
+    updateMaterialTypes();
+    type.value = "Valf";
+    location.value = "C-1";
+  }
+}
+function autoDetectMaterial() {
+  const name = document.getElementById("material-name").value.toLowerCase();
+
+  const category = document.getElementById("material-category");
+  const type = document.getElementById("material-type");
+  const location = document.getElementById("material-location");
+  const unit = document.getElementById("material-unit");
+  const code = document.getElementById("material-code");
+
+  if (name.includes("plc")) {
+    category.value = "Elektrik";
+    type.value = "PLC";
+    location.value = "A-1";
+    unit.value = "adet";
+    code.value = "ELK-PLC-" + Date.now().toString().slice(-4);
+  } else if (name.includes("röle") || name.includes("role")) {
+    category.value = "Elektrik";
+    type.value = "Röle";
+    location.value = "A-2";
+    unit.value = "adet";
+    code.value = "ELK-RLE-" + Date.now().toString().slice(-4);
+  } else if (name.includes("kablo")) {
+    category.value = "Elektrik";
+    type.value = "Kablo";
+    location.value = "A-3";
+    unit.value = "metre";
+    code.value = "ELK-KBL-" + Date.now().toString().slice(-4);
+  } else if (name.includes("rulman")) {
+    category.value = "Mekanik";
+    type.value = "Rulman";
+    location.value = "B-1";
+    unit.value = "adet";
+    code.value = "MEK-RLM-" + Date.now().toString().slice(-4);
+  } else if (name.includes("valf")) {
+    category.value = "Pnömatik";
+    type.value = "Valf";
+    location.value = "C-1";
+    unit.value = "adet";
+    code.value = "PNO-VLF-" + Date.now().toString().slice(-4);
+  } else if (name.includes("cıvata") || name.includes("civata")) {
+    category.value = "Bağlantı Elemanı";
+    type.value = "Cıvata";
+    location.value = "E-1";
+    unit.value = "adet";
+    code.value = "BGL-CVT-" + Date.now().toString().slice(-4);
+  }
+}
+function autoDetectMaterial() {
+  const name = document.getElementById("material-name").value.toLowerCase();
+
+  const category = document.getElementById("material-category");
+  const type = document.getElementById("material-type");
+  const location = document.getElementById("material-location");
+  const unit = document.getElementById("material-unit");
+  const code = document.getElementById("material-code");
+
+  if (name.includes("plc")) {
+    category.value = "Elektrik";
+    type.value = "PLC";
+    location.value = "A-1";
+    unit.value = "adet";
+    code.value = "ELK-PLC-" + Date.now().toString().slice(-4);
+  } else if (name.includes("röle") || name.includes("role")) {
+    category.value = "Elektrik";
+    type.value = "Röle";
+    location.value = "A-2";
+    unit.value = "adet";
+    code.value = "ELK-RLE-" + Date.now().toString().slice(-4);
+  } else if (name.includes("kablo")) {
+    category.value = "Elektrik";
+    type.value = "Kablo";
+    location.value = "A-3";
+    unit.value = "metre";
+    code.value = "ELK-KBL-" + Date.now().toString().slice(-4);
+  } else if (name.includes("rulman")) {
+    category.value = "Mekanik";
+    type.value = "Rulman";
+    location.value = "B-1";
+    unit.value = "adet";
+    code.value = "MEK-RLM-" + Date.now().toString().slice(-4);
+  } else if (name.includes("valf")) {
+    category.value = "Pnömatik";
+    type.value = "Valf";
+    location.value = "C-1";
+    unit.value = "adet";
+    code.value = "PNO-VLF-" + Date.now().toString().slice(-4);
+  } else if (name.includes("cıvata") || name.includes("civata")) {
+    category.value = "Bağlantı Elemanı";
+    type.value = "Cıvata";
+    location.value = "E-1";
+    unit.value = "adet";
+    code.value = "BGL-CVT-" + Date.now().toString().slice(-4);
   }
 }

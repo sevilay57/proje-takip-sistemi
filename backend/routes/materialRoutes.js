@@ -31,8 +31,29 @@ router.post("/", authMiddleware, async (req, res) => {
       supplierId,
     } = req.body;
 
+    router.delete("/:id", authMiddleware, async (req, res) => {
+  try {
+    const material = await Material.findByPk(req.params.id);
+
+    if (!material) {
+      return res.status(404).json({
+        message: "Malzeme bulunamadı",
+      });
+    }
+
+    await material.destroy();
+
+    res.json({
+      message: "Malzeme silindi",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Hata oluştu",
+    });
+  }
+});
     const material = await Material.create({
-      materialCode: "MLZ-" + Date.now(),
   materialCode: "MLZ-" + Date.now(),
   name,
   category,

@@ -114,26 +114,77 @@
 
     <div id="material-section" style="display: none;">
       <div class="material-form-box">
-       <h2>Malzeme Ekle</h2>
+      <h2>Malzeme Ekle</h2>
 
-<input type="text" id="material-name" placeholder="Malzeme Adı" />
+<input type="text" id="material-code" placeholder="Stok Kodu" />
 
-<input type="text" id="material-category" placeholder="Kategori (Elektrik, Mekanik, PLC...)" />
+<input
+  type="text"
+  id="material-name"
+  placeholder="Malzeme Adı"
+  oninput="autoDetectMaterial()"
+/>
+
+<select id="material-category">
+  <option value="">Kategori Seç</option>
+  <option value="Elektrik">Elektrik</option>
+  <option value="Mekanik">Mekanik</option>
+  <option value="Pnömatik">Pnömatik</option>
+  <option value="Hidrolik">Hidrolik</option>
+  <option value="Bağlantı Elemanı">Bağlantı Elemanı</option>
+  <option value="Sarf Malzeme">Sarf Malzeme</option>
+</select>
+
+<select id="material-type">
+  <option value="">Malzeme Türü Seç</option>
+  <option value="PLC">PLC</option>
+  <option value="Röle">Röle</option>
+  <option value="Kablo">Kablo</option>
+  <option value="Sensör">Sensör</option>
+  <option value="Kontaktör">Kontaktör</option>
+  <option value="Güç Kaynağı">Güç Kaynağı</option>
+  <option value="Rulman">Rulman</option>
+  <option value="Mil">Mil</option>
+  <option value="Lineer Kızak">Lineer Kızak</option>
+  <option value="Valf">Valf</option>
+  <option value="Hava Silindiri">Hava Silindiri</option>
+  <option value="Cıvata">Cıvata</option>
+  <option value="Somun">Somun</option>
+</select>
 
 <input type="number" id="material-quantity" placeholder="Miktar" />
 
 <input type="number" id="material-critical" placeholder="Kritik Stok Seviyesi" />
 
-<input type="text" id="material-unit" placeholder="Birim" />
+<select id="material-unit">
+  <option value="">Birim Seç</option>
+  <option value="adet">Adet</option>
+  <option value="metre">Metre</option>
+  <option value="kg">Kg</option>
+  <option value="kutu">Kutu</option>
+  <option value="takım">Takım</option>
+</select>
 
 <input type="number" id="material-price" placeholder="Birim Fiyat" />
 
-<input type="text" id="material-location" placeholder="Depo Konumu (A Rafı / B-12 vb.)" />
+<select id="material-location">
+  <option value="">Depo Konumu Seç</option>
+  <option value="A-1">A-1</option>
+  <option value="A-2">A-2</option>
+  <option value="A-3">A-3</option>
+  <option value="B-1">B-1</option>
+  <option value="B-2">B-2</option>
+  <option value="B-3">B-3</option>
+  <option value="C-1">C-1</option>
+  <option value="C-2">C-2</option>
+  <option value="C-3">C-3</option>
+  <option value="D-1">D-1</option>
+  <option value="D-2">D-2</option>
+  <option value="E-1">E-1</option>
+  <option value="E-2">E-2</option>
+</select>
 
-<textarea
-  id="material-description"
-  placeholder="Malzeme Açıklaması"
-></textarea>
+<textarea id="material-description" placeholder="Malzeme Açıklaması"></textarea>
 
 <select id="material-supplier">
   <option value="">Tedarikçi seç</option>
@@ -142,7 +193,6 @@
 <button type="button" onclick="addMaterial(event)">
   Malzeme Ekle
 </button>
-
 </div>
 
 <h2>Stok Listesi</h2>
@@ -161,12 +211,66 @@
       <div class="company-form-box">
         <h2>Firma Ekle</h2>
 
-        <input type="text" id="company-name" placeholder="Firma Adı" />
-        <input type="text" id="company-phone" placeholder="Telefon" />
-        <input type="email" id="company-email" placeholder="E-posta" />
-        <textarea id="company-address" placeholder="Adres"></textarea>
+       <h2>Cari Ekle</h2>
 
-        <button type="button" onclick="addCompany()">Firma Ekle</button>
+<input type="text" id="company-code" placeholder="Cari Kodu" />
+
+<input type="text" id="company-name" placeholder="Firma Ünvanı" />
+
+<select id="company-type">
+  <option value="">Cari Türü Seç</option>
+  <option value="Müşteri">Müşteri</option>
+  <option value="Tedarikçi">Tedarikçi</option>
+  <option value="Bayi">Bayi</option>
+  <option value="Alt Yüklenici">Alt Yüklenici</option>
+</select>
+
+<input type="text" id="company-authorized" placeholder="Yetkili Kişi" />
+
+<input type="text" id="company-phone" placeholder="Telefon" />
+
+<input type="email" id="company-email" placeholder="E-posta" />
+
+<input type="text" id="company-tax-number" placeholder="Vergi Numarası" />
+
+<input type="text" id="company-tax-office" placeholder="Vergi Dairesi" />
+
+<textarea id="company-address" placeholder="Adres"></textarea>
+
+<input type="number" id="company-balance" placeholder="Bakiye" />
+
+<select id="company-currency">
+  <option value="TL">TL</option>
+  <option value="USD">USD</option>
+  <option value="EUR">EUR</option>
+</select>
+
+<select id="company-payment-type">
+  <option value="">Ödeme Türü Seç</option>
+  <option value="Nakit">Nakit</option>
+  <option value="Havale">Havale</option>
+  <option value="EFT">EFT</option>
+  <option value="Kredi Kartı">Kredi Kartı</option>
+  <option value="Çek">Çek</option>
+</select>
+
+<select id="company-due-day">
+  <option value="">Vade Günü Seç</option>
+  <option value="Peşin">Peşin</option>
+  <option value="15 Gün">15 Gün</option>
+  <option value="30 Gün">30 Gün</option>
+  <option value="60 Gün">60 Gün</option>
+  <option value="90 Gün">90 Gün</option>
+</select>
+
+<select id="company-status">
+  <option value="Aktif">Aktif</option>
+  <option value="Pasif">Pasif</option>
+</select>
+
+<textarea id="company-notes" placeholder="Notlar"></textarea>
+
+<button type="button" onclick="addCompany()">Cari Ekle</button>
       </div>
 
       <h2>Firma Listesi</h2>
