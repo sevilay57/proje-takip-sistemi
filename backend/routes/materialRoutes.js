@@ -3,17 +3,14 @@ const router = express.Router();
 
 const Material = require("../models/Material");
 const authMiddleware = require("../middlewares/authMiddleware");
+
 router.get("/", authMiddleware, async (req, res) => {
   try {
     const materials = await Material.findAll();
-
     res.json(materials);
   } catch (error) {
     console.log(error);
-
-    res.status(500).json({
-      message: "Hata oluştu",
-    });
+    res.status(500).json({ message: "Hata oluştu" });
   }
 });
 
@@ -31,47 +28,41 @@ router.post("/", authMiddleware, async (req, res) => {
       supplierId,
     } = req.body;
 
-    router.delete("/:id", authMiddleware, async (req, res) => {
-  try {
-    const material = await Material.findByPk(req.params.id);
-
-    if (!material) {
-      return res.status(404).json({
-        message: "Malzeme bulunamadı",
-      });
-    }
-
-    await material.destroy();
-
-    res.json({
-      message: "Malzeme silindi",
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      message: "Hata oluştu",
-    });
-  }
-});
     const material = await Material.create({
-  materialCode: "MLZ-" + Date.now(),
-  name,
-  category,
-  quantity,
-  criticalStock,
-  unit,
-  unitPrice,
-  warehouseLocation,
-  description,
-  supplierId,
-});
+      materialCode: "MLZ-" + Date.now(),
+      name,
+      category,
+      quantity,
+      criticalStock,
+      unit,
+      unitPrice,
+      warehouseLocation,
+      description,
+      supplierId,
+    });
 
     res.status(201).json(material);
   } catch (error) {
     console.log(error);
-    res.status(500).json({
-      message: "Hata oluştu",
-    });
+    res.status(500).json({ message: "Hata oluştu" });
   }
 });
+
+router.delete("/:id", authMiddleware, async (req, res) => {
+  try {
+    const material = await Material.findByPk(req.params.id);
+
+    if (!material) {
+      return res.status(404).json({ message: "Malzeme bulunamadı" });
+    }
+
+    await material.destroy();
+
+    res.json({ message: "Malzeme silindi" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Hata oluştu" });
+  }
+});
+
 module.exports = router;
